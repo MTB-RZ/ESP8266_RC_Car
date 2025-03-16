@@ -1,0 +1,66 @@
+#include <ESP8266WiFi.h>
+#include <WebSocketsServer.h>
+#include <Servo.h>
+
+#define MOTOR_IN1 5  // D1
+#define MOTOR_IN2 4  // D2
+#define MOTOR_ENA 14 // D5 (PWM Speed Control)
+#define SERVO_PIN 2  // D4
+
+Servo steeringServo;
+WebSocketsServer webSocket(81);
+
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
+    if (type == WStype_TEXT) {
+        String msg = String((char *)payload);
+        
+        // Extract values
+        int sep = msg.indexOf(",");
+        if (sep == -1) return;
+        
+        float throttle = msg.substring(0, sep).toFloat();
+        float steering = msg.substring(sep + 1).toFloat();
+
+        // Update only the values on the same line
+        Serial.printf("\rReceived: %.2f, %.2f   ", throttle, steering);
+        Serial.flush();
+
+        int motorSpeed = map(abs(throttle) * 255, 0, 1, 0, 255);
+        int servoPos = map(steering * 90, -1, 1, 0, 180);
+
+        if (throttle > 0) {
+            digitalWrite(MOTOR_IN1, HIGH);
+            digitalWrite(MOTOR_IN2, LOW);
+        } else if (throttle < 0) {
+            digitalWrite(MOTOR_IN1, LOW);
+            digitalWrite(MOTOR_IN2, HIGH);
+        } else {
+            digitalWrite(MOTOR_IN1, LOW);
+            digitalWrite(MOTOR_IN2, LOW);
+        }
+
+        analogWrite(MOTOR_ENA, motorSpeed);
+        steeringServo.write(servoPos);
+    }
+}
+
+void setup() {
+    Serial.begin(115200);
+    WiFi.softAP("ESP_RC_Car", "12345678");
+    Serial.println("WiFi AP Started: ESP_RC_Car");
+    Serial.print("ESP8266 IP Address: ");
+    Serial.println(WiFi.softAPIP());
+
+    webSocket.begin();
+    webSocket.onEvent(webSocketEvent);
+    Serial.println("WebSocket Server Started on Port 81");
+
+    steeringServo.attach(SERVO_PIN);
+    pinMode(MOTOR_IN1, OUTPUT);
+    pinMode(MOTOR_IN2, OUTPUT);
+    pinMode(MOTOR_ENA, OUTPUT);
+}
+
+void loop() {
+    webSocket.loop();
+}
