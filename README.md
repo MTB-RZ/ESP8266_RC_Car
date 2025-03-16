@@ -1,7 +1,7 @@
 # ESP8266_RC_Car
 This project is a WiFi-controlled RC car using an ESP8266 and an L298N motor driver. The ESP8266 receives throttle and steering inputs via WebSockets and controls the DC motor and servo steering proportionally.
 
-Features
+**Features**
 ✅ Proportional throttle control (PWM-based speed control).
 ✅ Proportional steering control (Servo-based angle adjustment).
 ✅ WebSocket communication for real-time control.
