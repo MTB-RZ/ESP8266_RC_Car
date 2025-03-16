@@ -18,9 +18,9 @@ ESP8266 (NodeMCU or Wemos D1 Mini)
 
 L298N Motor Driver
 
-Coreless DC Motors
+High Speed 12V DC Motor
 
-Servo Motor for Steering
+Servo Motor for Steering (SG90)
 
 12V or 7.4V Li-ion Battery
 
