@@ -3,13 +3,13 @@ This project is a WiFi-controlled RC car using an ESP8266 and an L298N motor dri
 
 **Features**
 
-✅ Proportional throttle control (PWM-based speed control).
+• Proportional throttle control (PWM-based speed control).
 
-✅ Proportional steering control (Servo-based angle adjustment).
+• Proportional steering control (Servo-based angle adjustment).
 
-✅ WebSocket communication for real-time control.
+• WebSocket communication for real-time control.
 
-✅ Adjustable PWM frequency for stable motor operation.
+• Adjustable PWM frequency for stable motor operation.
 
 
 **Hardware Used**
